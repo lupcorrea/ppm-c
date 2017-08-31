@@ -29,3 +29,10 @@ $ doxygen Doxyfile
 ```
 
 Then, proceed to the generated *html* folder, and run the *index.html* file in your favorite browser.
+
+### To Do Hitlist
+
+- [ ] Model layer
+- [ ] File layer
+- [ ] Compression layer
+- [ ] Testbench
