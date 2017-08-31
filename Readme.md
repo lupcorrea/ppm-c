@@ -1,5 +1,9 @@
 # PPM-C
 
+### Coding Style
+For this project, we are using [Google C++ Style Guide] (https://google.github.io/styleguide/cppguide.html).
+
+
 ### Brief Description and Credits
 
 
