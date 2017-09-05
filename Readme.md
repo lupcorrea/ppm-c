@@ -36,3 +36,4 @@ Then, proceed to the generated *html* folder, and run the *index.html* file in y
 - [ ] File layer
 - [ ] Compression layer
 - [ ] Testbench
+- [ ] Commit
