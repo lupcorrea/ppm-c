@@ -8,7 +8,11 @@
 class PPMNode {
 public:
     PPMNode (std::size_t tree_level, std::size_t symbol);
-    void buildNode ();
+
+    Probability findSymbol (const std::size_t &context, const int &context_level);
+
+    bool hasSymbol (std::size_t symbol);
+    Probability buildProbability (const std::size_t &child_index, const bool &isEscape);
 
 private:
     NodeInfo data_;
