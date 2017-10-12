@@ -15,7 +15,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -g -Wall -Wextra 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11 -O3")
 
 # Sources
-file(GLOB SRC_FILES *.cpp)
+file(GLOB SRC_FILES
+	*.cpp
+	arithmetic/*.cpp)
 	
 # Executable
 add_executable(ppm-c ${SRC_FILES})
