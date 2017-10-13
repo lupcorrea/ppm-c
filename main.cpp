@@ -16,14 +16,14 @@
 #include <iostream> //std::cerr, std::endl
 #include "arithmetic/ArithmeticCoderC.h"
 
+#include "Stream.h"
+#include "Encoder.h"
+#include "Decoder.h"
+
 #define END_OF_FILE     256
 #define APLHABET_SIZE   257
 
-void encode(std::fstream& source, std::fstream& target) {
-
-    //Creates coder and set output stream (target)
-    ArithmeticCoderC coder;
-    coder.SetFile(&target);
+void encode(InputStream& source, Encoder& coder) {
 
     //Occurrences (starts all with value 1, equal probability)
     std::vector<unsigned int> occurrences(APLHABET_SIZE, 1);
@@ -32,8 +32,8 @@ void encode(std::fstream& source, std::fstream& target) {
     while(!source.eof()) {
 
         //Reads a byte from source
-        unsigned char symbol;
-        source.read(reinterpret_cast<char*>(&symbol), sizeof(char));
+        unsigned char symbol = source.readSymbol();
+//        source.read(reinterpret_cast<char*>(&symbol), sizeof(char));
 
         //Calculates low
         unsigned int low = 0;
@@ -42,7 +42,7 @@ void encode(std::fstream& source, std::fstream& target) {
         }
 
         //Encode symbol, high = low + occurrences[symbol];
-        coder.Encode(low, low + occurrences[symbol], total);
+        coder.encode(low, low + occurrences[symbol], total);
 
         //Update occurrences and total
         occurrences[symbol]++;
@@ -51,24 +51,19 @@ void encode(std::fstream& source, std::fstream& target) {
     }
 
     //Encode EOF
-    coder.Encode(total-1, total, total);
-    coder.EncodeFinish();
+    coder.encode(total-1, total, total);
+    coder.finish();
 
 }
 
-void decode(std::fstream& source, std::fstream& target) {
-
-    //Creates decoder and set input stream
-    ArithmeticCoderC coder;
-    coder.SetFile(&source);
-    coder.DecodeStart();
+void decode(OutputStream& target, Decoder& coder) {
 
     //Occurrences (starts all with value 1, equal probability)
     std::vector<unsigned int> occurrences(APLHABET_SIZE, 1);
     unsigned int total = APLHABET_SIZE;
 
     //Reads the first point of the interval
-    unsigned int value = coder.DecodeTarget(total);
+    unsigned int value = coder.decodeTarget(total);
 
     while(value != (total-1)) {
 
@@ -81,64 +76,41 @@ void decode(std::fstream& source, std::fstream& target) {
         }
 
         //Writes byte in output stream
-        target.write(reinterpret_cast<char*>(&symbol), sizeof(char));
+        target.writeSymbol(symbol);
 
         //Update decoder
-        coder.Decode(low, low + occurrences[symbol]);
+        coder.decode(low, low + occurrences[symbol]);
 
         //Update occurrences and total
         occurrences[symbol]++;
         total++;
 
         //Get new point of interval
-        value = coder.DecodeTarget(total);
+        value = coder.decodeTarget(total);
 
     };
 }
 
+
 int main() {
 
     //Read original file
-    std::fstream source1("file/coin.jpg", std::ios::in | std::ios::binary);
-    if(!source1.is_open()) {
-        std::cerr << "Failed to read original file. " << std::endl;
-        return 1;
-    }
+    InputStream original_file("file/coin.jpg");
 
-    //Create output stream to target.zp
-    std::fstream target1("target.zp", std::ios::out | std::ios::binary);
-    if(!target1.is_open()) {
-        std::cerr << "Failed to create zp file. " << std::endl;
-        return 1;
-    }
+    //Create Encoder.
+    Encoder encoder("target.zp");
 
     //Encode
-    encode(source1, target1);
+    encode(original_file, encoder);
 
-    //Close files
-    source1.close();
-    target1.close();
+    //Create output file
+    OutputStream rebuild_file("rebuild.jpg");
 
-    //Read zp file
-    std::fstream source2("target.zp", std::ios::in | std::ios::binary);
-    if(!source2.is_open()) {
-        std::cerr << "Failed to read zp file. " << std::endl;
-        return 1;
-    }
-
-    //Create output stream to rebuild file
-    std::fstream target2("rebuild.jpg", std::ios::out | std::ios::binary);
-    if(!target2.is_open()) {
-        std::cerr << "Failed to create rebuild file. " << std::endl;
-        return 1;
-    }
+    //Create decoder
+    Decoder decoder("target.zp");
 
     //Decode
-    decode(source2, target2);
-
-    //Close files
-    source2.close();
-    target2.close();
+    decode(rebuild_file, decoder);
 
     /* Read original file */
 
