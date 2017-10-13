@@ -11,8 +11,9 @@ struct NodeInfo {
 
 struct Probability {
     bool isEscape = true;
-    std::size_t low;
-    std::size_t high;
+    unsigned int low;
+    unsigned int high;
+    unsigned int total;
 }
 
 #endif // PPM_TABLE_CELL_H_
