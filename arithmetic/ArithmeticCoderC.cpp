@@ -8,18 +8,15 @@ const unsigned int g_FirstQuarter = 0x20000000;
 const unsigned int g_ThirdQuarter = 0x60000000;
 const unsigned int g_Half         = 0x40000000;
 
-ArithmeticCoderC::ArithmeticCoderC()
-{
-    mBitCount = 0;
-    mBitBuffer = 0;
-
-    mLow = 0;
-    mHigh = 0x7FFFFFFF; // arbeite nur mit den unteren 31 bit
-    mScale = 0;
-
-    mBuffer = 0;
-    mStep = 0;
-}
+ArithmeticCoderC::ArithmeticCoderC() :
+    mBitBuffer(0),
+    mBitCount(0),
+    mFile(nullptr),
+    mLow(0),
+    mHigh(0x7FFFFFFF), // arbeite nur mit den unteren 31 bit
+    mStep(0),
+    mScale(0),
+    mBuffer(0) { }
 
 void ArithmeticCoderC::SetFile( fstream *file )
 {
@@ -129,7 +126,7 @@ void ArithmeticCoderC::EncodeFinish()
     {
         SetBit( 0 );
 
-        for( int i=0; i<mScale+1; i++ ) // 1 + e3-Skalierung abbauen
+        for( unsigned int i=0; i<mScale+1; i++ ) // 1 + e3-Skalierung abbauen
             SetBit(1);
     }
     else // mLow < Half < ThirdQuarter <= mHigh
