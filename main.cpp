@@ -62,33 +62,30 @@ void decode(OutputStream& target, Decoder& coder) {
     std::vector<unsigned int> occurrences(APLHABET_SIZE, 1);
     unsigned int total = APLHABET_SIZE;
 
-    //Reads the first point of the interval
-    unsigned int value = coder.decodeTarget(total);
+    unsigned int symbol = 0;
 
-    while(value != (total-1)) {
+    do {
 
-        unsigned int low = 0;
-        unsigned char symbol = 0;
+        //Get new value to decode
+        unsigned int value = coder.decodeTarget(total);
 
         //Calculates symbol and low
+        unsigned int low = 0;
         for(symbol = 0; low + occurrences[symbol] <= value; symbol++) {
             low += occurrences[symbol];
         }
 
-        //Writes byte in output stream
-        target.writeSymbol(symbol);
+        //Writes symbol in output stream (if not EOF)
+        if(symbol < END_OF_FILE) target.writeSymbol(symbol);
 
-        //Update decoder
+        //Removes the effect of the decoded symbol.
         coder.decode(low, low + occurrences[symbol]);
 
-        //Update occurrences and total
+        //Update occurrences and total (update model)
         occurrences[symbol]++;
         total++;
 
-        //Get new point of interval
-        value = coder.decodeTarget(total);
-
-    };
+    } while(symbol != END_OF_FILE);
 }
 
 
