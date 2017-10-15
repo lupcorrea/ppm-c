@@ -3,6 +3,7 @@
 
 struct Probability {
     bool isEscape = true;
+    std::size_t symbol_index = 0;
     unsigned int low;
     unsigned int high;
     unsigned int total;

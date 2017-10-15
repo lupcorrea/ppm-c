@@ -9,8 +9,16 @@ class PPMNode {
 public:
     PPMNode (const std::size_t &context_level, const bool isEscape, const std::size_t &symbol);
 
+    Probability PPMNode::searchForMatch (const std::size_t* &context, const std::size_t &current_order);
+
+    bool isContext (void);
+    void createNewChild (const std::size_t &symbol);
+    void increaseOccurrenceCounter (void);
+    bool hasSymbol (const std::size_t &symbol);
+    std::size_t getOccurrenceCounter (void);
+    Probability hasChild (const std::size_t &symbol);
+
 private:
-    std::size_t context_level_;
     std::size_t symbol_;
     std::size_t occurrence_counter_;
 
@@ -19,7 +27,7 @@ private:
 
 struct Compare {
     bool operator() (PPMNode *lhs, PPMNode *rhs) {
-        return lhs->aabb.centroid_.x < rhs->aabb.centroid_.x;
+        return lhs->getOccurrenceCounter() < rhs->getOccurrenceCounter();
     }
 };
 
