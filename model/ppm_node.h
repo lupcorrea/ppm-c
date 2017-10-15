@@ -3,21 +3,26 @@
 
 #include <vector>
 
-#include "node_info.h"
+#include "../definitions.h"
 
 class PPMNode {
 public:
-    PPMNode (std::size_t tree_level, std::size_t symbol);
-
-    Probability findSymbol (const std::size_t &context, const int &context_level);
-
-    bool hasSymbol (std::size_t symbol);
-    Probability buildProbability (const std::size_t &child_index, const bool &isEscape);
+    PPMNode (const std::size_t &context_level, const bool isEscape, const std::size_t &symbol);
 
 private:
-    NodeInfo data_;
-    std::vector <PPMNode *> children_;
+    std::size_t context_level_;
+    std::size_t symbol_;
+    std::size_t occurrence_counter_;
 
+    std::vector <PPMNode*> children_;
 };
+
+struct Compare {
+    bool operator() (PPMNode *lhs, PPMNode *rhs) {
+        return lhs->aabb.centroid_.x < rhs->aabb.centroid_.x;
+    }
+};
+
+
 
 #endif // PPM_PPM_NODE_H_
