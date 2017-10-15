@@ -4,7 +4,7 @@ void PPMTree::PPMTree (void) {
     root_ = new PPMNode (0, false, NULL);
 }
 
-void encodeSymbol (std::size_t symbol) {
+void PPMTree::encodeSymbol (std::size_t symbol) {
     Probability prob;
 
     // Update context
@@ -28,7 +28,7 @@ void encodeSymbol (std::size_t symbol) {
     if (prob.isEscape) //TODO;
 }
 
-void updateContext (const std::size_t &symbol) {
+void PPMTree::updateContext (const std::size_t &symbol) {
     context_.insert (context_.begin(), symbol);
 
     if (context_.size() > kMaxOrder) context_.pop_back();

@@ -7,6 +7,10 @@ class PPMTree {
 public:
     PPMTree (void);
 
+    void encodeSymbol (std::size_t symbol);
+
+    void updateContext (const std::size_t &symbol);
+
 private:
     PPMNode* root_;
     std::vector<std::size_t> context_;

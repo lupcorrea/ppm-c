@@ -15,7 +15,7 @@ PPMNode::PPMNode (const std::size_t &context_level, const bool isEscape, const s
     if (context_level_ < kMaxOrder && !isEscape) children_.push_back (new PPMNode (context_level_ + 1, true, kEscape));
 }
 
-Probability PPMNode::searchForMatch (const std::size_t* &context, const std::size_t &current_order) {
+Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, const std::size_t &current_order) {
     Probability prob;
 
     // If current semileaf is not a context yet, do not even try.

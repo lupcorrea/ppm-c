@@ -9,7 +9,7 @@ class PPMNode {
 public:
     PPMNode (const std::size_t &context_level, const bool isEscape, const std::size_t &symbol);
 
-    Probability PPMNode::searchForMatch (const std::size_t* &context, const std::size_t &current_order);
+    Probability searchForMatch (const std::vector <std::size_t> &context, const std::size_t &current_order)
 
     bool isContext (void);
     void createNewChild (const std::size_t &symbol);
