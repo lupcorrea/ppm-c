@@ -19,7 +19,9 @@ Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, c
     Probability prob;
 
     // If current semileaf is not a context yet, do not even try.
-    if (current_order == 1 && !isContext) return NULL;
+    if (current_order == 1 && !isContext) {
+        prob.total = -1;
+    };
 
     // Non-recursive part: if reached  a semileaf, try to find the child we are after.
     if (current_order == 1) {

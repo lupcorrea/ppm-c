@@ -2,9 +2,11 @@
 
 void PPMTree::PPMTree (void) {
     root_ = new PPMNode (0, false, NULL);
+
+    symbols_left_ = kAlphabetSize;
 }
 
-void PPMTree::encodeSymbol (std::size_t symbol) {
+Probability PPMTree::encodeSymbol (std::size_t symbol) {
     Probability prob;
 
     // Update context
@@ -15,17 +17,27 @@ void PPMTree::encodeSymbol (std::size_t symbol) {
         prob = root->searchForMatch (context_, current_order);
 
         // If semileaf isn't a context yet, just drop it to a lesser K.
-        if (prob == NULL) continue;
+        if (prob.total == -1) continue;
 
-        // TODO: Code whatever came out of the search.
+        return prob;
     }
 
     // Process for K = 0
-    if (prob.isEscape || prob == NULL) prob = root->hasChild (symbol);
-    // TODO: Code whatever came out of the search.
+    if (prob.isEscape || prob.total == -1) prob = root->hasChild (symbol); 
+    return prob;
 
     // If everything so far failed, code it with equiprobability
-    if (prob.isEscape) //TODO;
+    if (prob.isEscape) {
+        // Encode
+        prob.low = symbol;
+        prob.high = symbol+1;
+        prob.total = kAlphabetSize
+
+        // Update
+        root_->createNewChild (symbol);
+    }
+
+    return prob;
 }
 
 void PPMTree::updateContext (const std::size_t &symbol) {
