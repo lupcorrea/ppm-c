@@ -17,8 +17,9 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++11 -O3")
 # Sources
 file(GLOB SRC_FILES
 	*.cpp
-	arithmetic/*.cpp)
-	
+	arithmetic/*.cpp
+    model/*.cpp)
+
 # Executable
 add_executable(ppm-c ${SRC_FILES})
 

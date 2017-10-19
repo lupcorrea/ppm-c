@@ -19,7 +19,7 @@ Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, c
     Probability prob;
 
     // If current semileaf is not a context yet, do not even try.
-    if (current_order == 1 && !isContext) {
+    if (current_order == 1 && !isContext()) {
         prob.total = -1;
     };
 
@@ -27,7 +27,7 @@ Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, c
     if (current_order == 1) {
         prob = hasChild (context [0]);
         if (prob.isEscape) createNewChild (context [0]);
-        else children_ [prob.symbol_index]->increaseOccurrenceCounter()++;
+        else children_ [prob.symbol_index]->increaseOccurrenceCounter();
         return prob;
     }
 
@@ -48,7 +48,7 @@ bool PPMNode::isContext (void) {
 
 void PPMNode::createNewChild (const std::size_t &symbol) {
     // Update escape counter
-    children_ [0].increaseOccurrenceCounter();
+    children_ [0]->increaseOccurrenceCounter();
 
     // Create child
     children_.push_back (new PPMNode (context_level_ + 1, false, symbol));
@@ -94,13 +94,15 @@ Probability PPMNode::hasChild (const std::size_t &symbol) {
     if (prob.isEscape) return prob;
 
     // Go after the match
-    for (int child_index = 1; child_index < children_.size(); child_index++) {
-        // Whenever loop reaches the match, set the probability struct and abort immediately.
-        if (sorted_children [child_index]->hasSymbol (symbol)) {
-            prob.low = prob.total;
-            prob.high = prob.total + sorted_children [child_index]->getOccurrenceCounter();
-            break;
+    while (true) {
+        if (sorted_children.top()->hasSymbol (symbol)) {
+            sorted_children.pop();
+            continue;
         }
+
+        prob.low = prob.total;
+        prob.high = prob.total + sorted_children.top()->getOccurrenceCounter();
+        break;
     }
 
     // Return probability struct;

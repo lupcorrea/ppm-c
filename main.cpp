@@ -19,113 +19,38 @@
 #include "Stream.h"
 #include "Encoder.h"
 #include "Decoder.h"
+#include "model/ppm_tree.h"
 
 #define END_OF_FILE     256
 #define APLHABET_SIZE   257
 
-void encode(InputStream& source, Encoder& coder) {
+int main() {
 
-    //Occurrences (starts all with value 1, equal probability)
-    std::vector<unsigned int> occurrences(APLHABET_SIZE, 1);
-    unsigned int total = APLHABET_SIZE;
+    // Read original file
+    InputStream original_file ("file/coin.jpg");
 
-    while(!source.eof()) {
+    // Create Encoder
+    Encoder encoder ("target.zp");
 
-        //Reads a byte from source
-        unsigned char symbol = source.readSymbol();
-//        source.read(reinterpret_cast<char*>(&symbol), sizeof(char));
+    // Create model
+    PPMTree model = PPMTree();
 
-        //Calculates low
-        unsigned int low = 0;
-        for(unsigned char i = 0;  i < symbol; i++) {
-            low += occurrences[i];
-        }
+    // Create probability structure
+    Probability prob;
 
-        //Encode symbol, high = low + occurrences[symbol];
-        coder.encode(low, low + occurrences[symbol], total);
+    while (!original_file.eof()) {
+        // Reads a byte from source
+        unsigned char symbol = original_file.readSymbol();
 
-        //Update occurrences and total
-        occurrences[symbol]++;
-        total++;
+        // Calculate probability
+        prob = model.encodeSymbol (symbol);
 
+        //Encode symbol
+        encoder.encode (prob.low, prob.high, prob.total);
     }
 
     //Encode EOF
-    coder.encode(total-1, total, total);
-    coder.finish();
-
-}
-
-void decode(OutputStream& target, Decoder& coder) {
-
-    //Occurrences (starts all with value 1, equal probability)
-    std::vector<unsigned int> occurrences(APLHABET_SIZE, 1);
-    unsigned int total = APLHABET_SIZE;
-
-    unsigned int symbol = 0;
-
-    do {
-
-        //Get new value to decode
-        unsigned int value = coder.decodeTarget(total);
-
-        //Calculates symbol and low
-        unsigned int low = 0;
-        for(symbol = 0; low + occurrences[symbol] <= value; symbol++) {
-            low += occurrences[symbol];
-        }
-
-        //Writes symbol in output stream (if not EOF)
-        if(symbol < END_OF_FILE) target.writeSymbol(symbol);
-
-        //Removes the effect of the decoded symbol.
-        coder.decode(low, low + occurrences[symbol]);
-
-        //Update occurrences and total (update model)
-        occurrences[symbol]++;
-        total++;
-
-    } while(symbol != END_OF_FILE);
-}
-
-
-int main() {
-
-    //Read original file
-    InputStream original_file("file/coin.jpg");
-
-    //Create Encoder.
-    Encoder encoder("target.zp");
-
-    //Encode
-    encode(original_file, encoder);
-
-    //Create output file
-    OutputStream rebuild_file("rebuild.jpg");
-
-    //Create decoder
-    Decoder decoder("target.zp");
-
-    //Decode
-    decode(rebuild_file, decoder);
-
-    /* Read original file */
-
-    /* Build the model */
-
-
-    /* Build the header */
-
-
-    /* Compress the model */
-
-    /* Write compressed file */
-
-    /* Decompress the file */
-
-    /* Write decompressed file */
-
-    /* Test compression */
+    encoder.finish();
 
     return 0;
 }
