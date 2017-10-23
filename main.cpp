@@ -1,19 +1,6 @@
-//
-///* Include file module */
-//#include "file/whatever.h"
-//
-///* Include model module */
-//#include "model/whatever.h"
-//
-///* Include test module */
-//#include "test/whatever.h"
-//
-///* Include compression and decompression module */
-//#include "zip/whatever.h"
-
-#include <vector>   //std::vector
-#include <fstream>  //std::fstream
-#include <iostream> //std::cerr, std::endl
+#include <vector>
+#include <fstream>
+#include <iostream>
 #include "arithmetic/ArithmeticCoderC.h"
 
 #include "Stream.h"
@@ -27,7 +14,7 @@
 int main() {
 
     // Read original file
-    InputStream original_file ("file/coin.jpg");
+    InputStream original_file ("file/abracadabra.txt");
 
     // Create Encoder
     Encoder encoder ("target.zp");

@@ -7,6 +7,7 @@ struct Probability {
     unsigned int low;
     unsigned int high;
     unsigned int total;
+    bool hasContext = true;
 };
 
 #endif // PPM_TABLE_CELL_H_

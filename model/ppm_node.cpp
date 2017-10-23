@@ -20,7 +20,7 @@ Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, c
 
     // If current semileaf is not a context yet, do not even try.
     if (current_order == 1 && !isContext()) {
-        prob.total = -1;
+        prob.hasContext = false;
     };
 
     // Non-recursive part: if reached  a semileaf, try to find the child we are after.
@@ -67,8 +67,16 @@ std::size_t PPMNode::getOccurrenceCounter (void) {
 }
 
 Probability PPMNode::hasChild (const std::size_t &symbol) {
-    // Setup for worst case scenario (no match found)
     Probability prob;
+
+    // If there is no occurrence at escape counter, this is a newly created node.
+    // Abort immediately.
+    if (children_ [0]->occurrence_counter_ == 0) {
+        prob.hasContext == false;
+        return prob;
+    }
+
+    // Setup for worst case scenario (no match found)
     prob.low = 0;
     prob.high = children_ [0]->getOccurrenceCounter ();
     prob.total = children_ [0]->getOccurrenceCounter ();
@@ -106,5 +114,17 @@ Probability PPMNode::hasChild (const std::size_t &symbol) {
     }
 
     // Return probability struct;
+    return prob;
+}
+
+Probability PPMNode::encodeFirstSymbol (const std::size_t &symbol) {
+    Probability prob;
+
+    prob.low = symbol;
+    prob.high = symbol + 1;
+    prob.total = kAlphabetSize;
+
+    children_ [0]->increaseOccurrenceCounter();
+
     return prob;
 }

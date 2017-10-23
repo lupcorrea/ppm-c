@@ -19,6 +19,8 @@ public:
     std::size_t getOccurrenceCounter (void);
     Probability hasChild (const std::size_t &symbol);
 
+    Probability encodeFirstSymbol (const std::size_t &symbol);
+
 private:
     std::size_t symbol_;
     std::size_t occurrence_counter_;

@@ -1,12 +1,14 @@
 #ifndef PPM_DEFINITIONS_H_
 #define PPM_DEFINITIONS_H_
 
+#include <iostream>
+
 /// \brief Constants definition file.
 
 /// Determines the amount of symbols the system will encode.
 /// If this variable is set to X, then the system will encode the first X symbols
 /// obtained from the input file.
-const std::size_t kAlphabetSize = 10;
+const std::size_t kAlphabetSize = 256;
 
 /// Determines the maximum amount of context levels used for encoding.
 /// For better performance, set this variable to lower values.
