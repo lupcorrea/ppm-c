@@ -4,14 +4,14 @@ PPMTree::PPMTree (void) {
     root_ = new PPMNode (0, false, kAlphabetSize + 5);
 }
 
-Probability PPMTree::encodeSymbol (std::size_t symbol) {
+void PPMTree::encodeSymbol (Encoder &encoder, const std::size_t &symbol) {
     Probability prob;
 
     // Update context
     updateContext (symbol);
 /**/
-    std::cout << "[Context] ";
-    for (int i = 0; i < context_.size(); i++) std::cout << context_ [i] << " ";
+    std::cout << "\n[Context]";
+    for (std::size_t i = 0; i < context_.size(); i++) printf (" %c", context_ [i]);
     std::cout << '\n';
 /**/
 
@@ -26,7 +26,8 @@ Probability PPMTree::encodeSymbol (std::size_t symbol) {
         std::cout << "[Probability] Total: " << prob.total << '\n';
 /**/
 
-        return prob;
+        encoder.encode (prob.low, prob.high, prob.total);
+        return;
     }
 
     // Process for K > 0
@@ -42,7 +43,10 @@ Probability PPMTree::encodeSymbol (std::size_t symbol) {
         std::cout << "[Probability] Total: " << prob.total << '\n';
         std::cout << "[Probability] Escape: " << prob.isEscape << '\n';
 /**/
-        return prob;
+
+        encoder.encode (prob.low, prob.high, prob.total);
+        if (prob.isEscape) continue;
+        return;
     }
 
     // Process for K = 0
@@ -57,34 +61,40 @@ Probability PPMTree::encodeSymbol (std::size_t symbol) {
         std::cout << "[Probability] Escape: " << prob.isEscape << '\n';
 /**/
 
-        return prob;
+        encoder.encode (prob.low, prob.high, prob.total);
     }
 
 
     // If everything so far failed, code it with equiprobability
     if (prob.isEscape) {
         // Encode
-        prob.low = symbol;
-        prob.high = symbol+1;
-        prob.total = kAlphabetSize;
-
-/**/
-        std::cout << "[Order] -1" << '\n';
-        std::cout << "[Probability] Low: " << prob.low << '\n';
-        std::cout << "[Probability] High: " << prob.high << '\n';
-        std::cout << "[Probability] Total: " << prob.total << '\n';
-        std::cout << "[Probability] Escape: " << prob.isEscape << '\n';
-/**/
+        prob = encodeNegative (symbol);
+        encoder.encode (prob.low, prob.high, prob.total);
 
         // Update
         root_->createNewChild (symbol);
     }
-
-    return prob;
 }
 
 void PPMTree::updateContext (const std::size_t &symbol) {
     context_.insert (context_.begin(), symbol);
 
     if (context_.size() > kMaxOrder) context_.pop_back();
+}
+
+Probability PPMTree::encodeNegative (const std::size_t &symbol) {
+    Probability prob;
+
+    prob.low = symbol;
+    prob.high = symbol + 1;
+    prob.total = kAlphabetSize;
+
+/**/
+    std::cout << "[Order] -1" << '\n';
+    std::cout << "[Probability] Low: " << prob.low << '\n';
+    std::cout << "[Probability] High: " << prob.high << '\n';
+    std::cout << "[Probability] Total: " << prob.total << '\n';
+/**/
+
+    return prob;
 }

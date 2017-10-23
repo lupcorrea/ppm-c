@@ -2,12 +2,14 @@
 #define PPM_PPM_TREE_H_
 
 #include "ppm_node.h"
+#include "../Encoder.h"
 
 class PPMTree {
 public:
     PPMTree (void);
 
-    Probability encodeSymbol (std::size_t symbol);
+    void encodeSymbol (Encoder &encoder, const std::size_t &symbol);
+    Probability encodeNegative (const std::size_t &symbol);
 
     void updateContext (const std::size_t &symbol);
 

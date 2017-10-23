@@ -22,18 +22,12 @@ int main() {
     // Create model
     PPMTree model = PPMTree();
 
-    // Create probability structure
-    Probability prob;
-
     while (!original_file.eof()) {
         // Reads a byte from source
         unsigned char symbol = original_file.readSymbol();
 
-        // Calculate probability
-        prob = model.encodeSymbol (symbol);
-
-        //Encode symbol
-        encoder.encode (prob.low, prob.high, prob.total);
+        // Calculate probability and encode symbol
+        model.encodeSymbol (encoder, symbol);
     }
 
     //Encode EOF

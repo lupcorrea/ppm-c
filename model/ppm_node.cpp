@@ -21,6 +21,7 @@ Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, c
     // If current semileaf is not a context yet, do not even try.
     if (current_order == 1 && !isContext()) {
         prob.hasContext = false;
+        return prob;
     };
 
     // Non-recursive part: if reached  a semileaf, try to find the child we are after.
@@ -32,7 +33,7 @@ Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, c
     }
 
     // Recursive part: keep trying to find a match for all of the context elements
-    for (int child_index = 1; child_index < children_.size(); child_index++) {
+    for (std::size_t child_index = 1; child_index < children_.size(); child_index++) {
         if (children_ [child_index]->hasSymbol (context [current_order])) {
             prob = searchForMatch (context, current_order-1);
             break;
@@ -72,7 +73,7 @@ Probability PPMNode::hasChild (const std::size_t &symbol) {
     // If there is no occurrence at escape counter, this is a newly created node.
     // Abort immediately.
     if (children_ [0]->occurrence_counter_ == 0) {
-        prob.hasContext == false;
+        prob.hasContext = false;
         return prob;
     }
 
@@ -86,7 +87,7 @@ Probability PPMNode::hasChild (const std::size_t &symbol) {
     std::priority_queue <PPMNode*, std::vector<PPMNode*>, Compare> sorted_children;
 
     // Sort every child and check if there is any match
-    for (int child_index = 1; child_index < children_.size(); child_index++) {
+    for (std::size_t child_index = 1; child_index < children_.size(); child_index++) {
         sorted_children.push (children_ [child_index]);
 
         // If match was found, set flag
@@ -124,7 +125,7 @@ Probability PPMNode::encodeFirstSymbol (const std::size_t &symbol) {
     prob.high = symbol + 1;
     prob.total = kAlphabetSize;
 
-    children_ [0]->increaseOccurrenceCounter();
+    createNewChild (symbol);
 
     return prob;
 }

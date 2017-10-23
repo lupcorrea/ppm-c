@@ -8,16 +8,16 @@
 #include <type_traits>  //std::enable_if<>
 
 template <std::ios_base::openmode mode>
-class Stream : public fstream {
+class Stream : public std::fstream {
 
 public:
 
     /// \brief Default constructor.
-    Stream(void) : fstream() {}
+    Stream(void) : std::fstream() {}
 
     /// \brief Constructor.
     /// \param filename The filename to open/create.
-    Stream(const std::string& filename) : fstream() {
+    Stream(const std::string& filename) : std::fstream() {
         Stream::open(filename);
     }
 
