@@ -5,7 +5,7 @@
 
 #include "node_info.h"
 
-PPMNode::PPMNode (const std::size_t &context_level, const bool isEscape, const std::size_t &symbol) {
+PPMNode::PPMNode (const int &context_level, const bool isEscape, const std::size_t &symbol) {
     // Setup basic information
     context_level_ = context_level;
     symbol_ = symbol;
@@ -18,8 +18,19 @@ PPMNode::PPMNode (const std::size_t &context_level, const bool isEscape, const s
 Probability PPMNode::searchForMatch (const std::vector <std::size_t> &context, const std::size_t &current_order) {
     Probability prob;
 
+    // If this is tree's root, activate recursivity
+    if (context_level_ == -1) {
+        for (std::size_t child_index = 1; child_index < children_.size(); child_index++) {
+            if (children_ [child_index]->hasSymbol (context [current_order])) {
+                prob = searchForMatch (context, current_order-1);
+                return prob;
+            }
+        }
+    }
+
     // If current semileaf is not a context yet, do not even try.
     if (current_order == 1 && !isContext()) {
+        createNewChild (context [0]);
         prob.hasContext = false;
         return prob;
     };

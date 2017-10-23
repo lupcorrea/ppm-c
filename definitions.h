@@ -13,7 +13,7 @@ const std::size_t kAlphabetSize = 256;
 /// Determines the maximum amount of context levels used for encoding.
 /// For better performance, set this variable to lower values.
 /// For better compression, set this variable to higher values.
-const std::size_t kMaxOrder = 3;
+const int kMaxOrder = 3;
 
 /// Determines the "symbol" created to represent the escape.
 /// It is always set to one symbol further than the alphabet size,

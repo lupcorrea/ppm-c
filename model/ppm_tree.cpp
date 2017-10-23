@@ -1,7 +1,7 @@
 #include "ppm_tree.h"
 
 PPMTree::PPMTree (void) {
-    root_ = new PPMNode (0, false, kAlphabetSize + 5);
+    root_ = new PPMNode (-1, false, kAlphabetSize + 5);
 }
 
 void PPMTree::encodeSymbol (Encoder &encoder, const std::size_t &symbol) {
