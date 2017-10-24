@@ -6,6 +6,7 @@ PPMTree::PPMTree (void) {
 
 void PPMTree::encodeSymbol (Encoder &encoder, const std::size_t &symbol) {
     Probability prob;
+    PPMNode *beginning = nullptr;
 
     // Update context
     updateContext (symbol);
@@ -32,7 +33,9 @@ void PPMTree::encodeSymbol (Encoder &encoder, const std::size_t &symbol) {
 
     // Process for K > 0
     for (int current_order = context_.size()-1; current_order > 0; current_order--) {
-        prob = root_->searchForMatch (context_, current_order);
+        root_->searchForChild (context_ [current_order], beginning);
+        if (beginning == nullptr) break;
+        prob = beginning->searchForMatch (context_, current_order);
 
         // If semileaf isn't a context yet, just drop it to a lesser K.
         if (!prob.hasContext) continue;

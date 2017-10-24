@@ -14,7 +14,7 @@
 int main() {
 
     // Read original file
-    InputStream original_file ("file/abracadabra.txt");
+    InputStream original_file ("model/ppm_node.cpp");
 
     // Create Encoder
     Encoder encoder ("target.zp");
@@ -22,9 +22,14 @@ int main() {
     // Create model
     PPMTree model = PPMTree();
 
-    while (!original_file.eof()) {
+    while (true) {
         // Reads a byte from source
         unsigned char symbol = original_file.readSymbol();
+
+        if (original_file.eof()) {
+            model.encodeSymbol (encoder, kEndOfFile);
+            break;
+        }
 
         // Calculate probability and encode symbol
         model.encodeSymbol (encoder, symbol);

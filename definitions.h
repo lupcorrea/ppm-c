@@ -20,7 +20,9 @@ const int kMaxOrder = 3;
 /// so it doesn't get mistaken for a regular symbol.
 const std::size_t kEscape = kAlphabetSize + 1;
 
-/// This variable is not being used yet.
-const std::size_t kMessageSize = 12;
+/// Determines the "symbol" created to represent the end of the file.
+/// It is always set to two symbols further than the alphabet size,
+/// so it doesn't get mistaken for a regular symbol.
+const std::size_t kEndOfFile = kAlphabetSize + 2;
 
 #endif

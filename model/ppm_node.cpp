@@ -114,14 +114,16 @@ Probability PPMNode::hasChild (const std::size_t &symbol) {
     if (prob.isEscape) return prob;
 
     // Go after the match
+    std::size_t counter = children_ [0]->getOccurrenceCounter();
     while (true) {
-        if (sorted_children.top()->hasSymbol (symbol)) {
+        if (!sorted_children.top()->hasSymbol (symbol)) {
+            counter += sorted_children.top()->getOccurrenceCounter();
             sorted_children.pop();
             continue;
         }
 
-        prob.low = prob.total;
-        prob.high = prob.total + sorted_children.top()->getOccurrenceCounter();
+        prob.low = counter;
+        prob.high = prob.low + sorted_children.top()->getOccurrenceCounter();
         break;
     }
 
@@ -139,4 +141,15 @@ Probability PPMNode::encodeFirstSymbol (const std::size_t &symbol) {
     createNewChild (symbol);
 
     return prob;
+}
+
+void PPMNode::searchForChild (const std::size_t& symbol, PPMNode *output) {
+    for (std::size_t child_index = 1; child_index < children_.size(); child_index++) {
+        if (children_ [child_index]->hasSymbol (symbol)) {
+            output = children_ [child_index];
+            break;
+        }
+    }
+
+    output = nullptr;
 }

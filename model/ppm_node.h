@@ -18,6 +18,7 @@ public:
     bool hasSymbol (const std::size_t &symbol);
     std::size_t getOccurrenceCounter (void);
     Probability hasChild (const std::size_t &symbol);
+    void searchForChild (const std::size_t& symbol, PPMNode *output);
 
     Probability encodeFirstSymbol (const std::size_t &symbol);
 
